@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NetPerform Buddy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+    h1 {
+      color: #e60000;
+      text-align: center;
+      font-size: 2.2em;
+      margin-bottom: 10px;
+    }
+    #chat {
+      border: 2px solid #e60000;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      height: 450px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    }
+    .message {
+      padding: 6px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    .user {
+      background: #ffe5e5;
+      font-weight: bold;
+    }
+    .bot {
+      background: #e6ffe6;
+      font-weight: bold;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    input {
+      width: 75%;
+      margin-right: 5px;
+    }
+    button {
+      background: #e60000;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <h1>NetPerform Buddy</h1>
+  <div id="chat"></div>
+  <input type="text" id="question" placeholder="Ask me something...">
+  <button onclick="sendQuestion()">Send</button>
+
+  <script>
+    function appendMessage(sender, message) {
+      const chat = document.getElementById("chat");
+      const msg = document.createElement("div");
+      msg.className = `message ${sender}`;
+      msg.innerHTML = `<strong>${sender.toUpperCase()}:</strong> ${message}`;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendQuestion() {
+      const input = document.getElementById("question");
+      const question = input.value.trim();
+      if (!question) return;
+
+      appendMessage("user", question);
+      input.value = "";
+
+      try {
+        const res = await fetch("/api/chatbot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        const data = await res.json();
+        appendMessage("bot", data.answer);
+      } catch (err) {
+        appendMessage("bot", "Error: Unable to connect to server.");
+      }
+    }
+  </script>
+</body>
+</html>
 
