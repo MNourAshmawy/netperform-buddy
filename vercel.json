@@ -1,12 +1,31 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/chatbot.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" }
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
+    },
+    { 
+      "src": "api/chatbot.js", 
+      "use": "@vercel/node" 
+    }
   ],
   "routes": [
-    { "src": "/api/chatbot", "dest": "api/chatbot.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "includeFiles": "faq.csv"
+    { 
+      "src": "/api/chatbot", 
+      "dest": "/api/chatbot.js" 
+    },
+    { 
+      "src": "/static/(.*)", 
+      "dest": "/static/$1" 
+    },
+    { 
+      "src": "/(.*)", 
+      "dest": "/index.html", 
+      "headers": {
+        "Cache-Control": "s-maxage=0, stale-while-revalidate=60"
+      }
+    }
+  ]
 }
