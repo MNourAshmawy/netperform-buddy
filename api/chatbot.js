@@ -1,25 +1,17 @@
-const express = require('express');
 const fs = require('fs');
-const path = require('path');
 const csv = require('csv-parser');
+const path = require('path');
 
-const app = express();
-app.use(express.json());
-
-// Load CSV from deployed directory
+// Load CSV data once when the function starts
 let faqs = [];
 const csvPath = path.join(__dirname, '..', 'faq.csv');
 
-if (fs.existsSync(csvPath)) {
-  fs.createReadStream(csvPath)
-    .pipe(csv())
-    .on('data', (row) => faqs.push(row))
-    .on('end', () => console.log('FAQ data loaded'));
-} else {
-  console.error('FAQ CSV file not found at', csvPath);
-}
+fs.createReadStream(csvPath)
+  .pipe(csv())
+  .on('data', (row) => faqs.push(row))
+  .on('end', () => console.log('FAQ data loaded'));
 
-// Simple similarity scoring
+// Simple similarity function
 function getSimilarity(a, b) {
   a = a.toLowerCase();
   b = b.toLowerCase();
@@ -32,14 +24,19 @@ function getSimilarity(a, b) {
   return matches / Math.max(aWords.length, bWords.length);
 }
 
-// API endpoint
-app.post('/api/chatbot', (req, res) => {
-  const question = req.body.question?.toLowerCase();
-  if (!question) {
-    return res.status(400).json({ answer: 'Please provide a question.' });
+// Vercel API handler
+module.exports = (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let bestMatch = { answer: "Sorry, I couldn't find an answer to that.", score: 0 };
+  const { question } = req.body;
+  if (!question) {
+    return res.status(400).json({ answer: 'Missing question' });
+  }
+
+  let bestMatch = { answer: "Sorry, I couldn't find an answer.", score: 0 };
+
   for (let faq of faqs) {
     const score = getSimilarity(question, faq.question);
     if (score > bestMatch.score) {
@@ -48,10 +45,8 @@ app.post('/api/chatbot', (req, res) => {
   }
 
   if (bestMatch.score >= 0.3) {
-    res.json({ answer: bestMatch.answer });
+    res.status(200).json({ answer: bestMatch.answer });
   } else {
-    res.json({ answer: "Sorry, I couldn't find an answer to that." });
+    res.status(200).json({ answer: "Sorry, I couldn't find an answer." });
   }
-});
-
-module.exports = app;
+};
