@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "vercel-build": "react-scripts build",
-    "serve-backend": "node api/chatbot.js"
-  },
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "vercel-build": "npm run build && echo 'Build complete'",
+  "serve-backend": "node api/chatbot.js"
+},
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
