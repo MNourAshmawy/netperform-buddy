@@ -1,0 +1,12 @@
+# Ignore backend files (deployed separately via vercel.json)
+api/
+node_modules/
+
+# Ignore development files
+.env.local
+.DS_Store
+*.log
+
+# Optional: Ignore frontend dev files if needed
+src/
+public/
