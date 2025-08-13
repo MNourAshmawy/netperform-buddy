@@ -1,3 +1,7 @@
+console.log("✅ Serverless function initialized");
+console.log("Current directory:", __dirname);
+console.log("Files in directory:", fs.readdirSync(__dirname));
+
 const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
