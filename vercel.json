@@ -2,18 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
-    },
-    {
       "src": "api/chatbot.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/chatbot",
       "dest": "/api/chatbot.js",
       "methods": ["GET", "POST", "OPTIONS"]
     },
