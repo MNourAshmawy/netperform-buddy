@@ -4,21 +4,13 @@
     {
       "src": "api/chatbot.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build"
     }
   ],
   "routes": [
     {
       "src": "/api/chatbot",
       "dest": "/api/chatbot.js",
-      "methods": ["GET", "POST", "OPTIONS"]
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "methods": ["POST", "OPTIONS"]
     }
   ]
 }
